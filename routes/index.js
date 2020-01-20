@@ -6,6 +6,7 @@ router.get('/', async (ctx, next) => {
     const signature = ctx.query.signature
     const timestamp = ctx.query.timestamp
     const nonce = ctx.query.nonce
+    const echostr = ctx.query.echostr
     const wechatToken = config.wechatToken
 
     const tmpArr = [wechatToken, timestamp, nonce].sort()
@@ -13,7 +14,7 @@ router.get('/', async (ctx, next) => {
     tmpStr = encrypt('sha1', tmpStr)
 
     if(tmpStr === signature) {
-        return ctx.body = signature
+        return ctx.body = echostr
     }
 
     return ctx.body = false
