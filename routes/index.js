@@ -13,7 +13,7 @@ router.get('/', async (ctx, next) => {
     tmpStr = encrypt('sha1', tmpStr)
 
     if(tmpStr === signature) {
-        return ctx.body = true
+        return ctx.body = signature
     }
 
     return ctx.body = false
