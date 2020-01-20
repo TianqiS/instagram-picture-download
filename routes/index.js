@@ -20,6 +20,10 @@ router.get('/', async (ctx, next) => {
     return ctx.body = false
 })
 
+router.post('/', async (ctx, next) => {
+    return ctx.body = "success"
+})
+
 router.get('/string', async (ctx, next) => {
   ctx.body = 'koa2 string'
 })
