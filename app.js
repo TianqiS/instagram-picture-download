@@ -5,6 +5,7 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
+const xmlParser = require('koa-xml-body')
 
 const index = require('./routes/index')
 const users = require('./routes/users')
@@ -14,6 +15,7 @@ const ins = require('./routes/ins')
 onerror(app)
 
 // middlewares
+app.use(xmlParser())
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
