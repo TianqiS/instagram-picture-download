@@ -10,6 +10,10 @@ const xmlParser = require('koa-xml-body')
 const index = require('./routes/index')
 const users = require('./routes/users')
 const ins = require('./routes/ins')
+const config = require('./utils/config')
+const wechatPublicApi = require('./utils/wechatPublicApi')
+
+wechatPublicApi.getAndRefreshToken()
 
 // error handler
 onerror(app)
