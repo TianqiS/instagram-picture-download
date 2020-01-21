@@ -18,7 +18,7 @@ function mkdirSync(dirname) {
 }
 
 module.exports = async (url) => {
-    const browers = await puppeteer.launch()
+    const browers = await puppeteer.launch({args: ['--no-sandbox']})
     const page = await browers.newPage()
 
     await page.goto(url)
@@ -28,7 +28,7 @@ module.exports = async (url) => {
         throw error
     })
     const imgName = /[^\/]+\.(png|jpe?g|gif|svg)/.exec(imgUrl)[0]
-    const savePath = path.resolve(rootDir, './file' + imgName)
+    const savePath = path.resolve(rootDir, './file/', imgName)
     mkdirSync('file')
     return new Promise((resolve, reject) => {
         request(imgUrl).pipe(fs.createWriteStream(savePath))
