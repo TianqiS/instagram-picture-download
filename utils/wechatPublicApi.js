@@ -19,6 +19,7 @@ exports.getAccessToken = async (appId, secret) => {
 exports.getAndRefreshToken = async () => {
     let accessToken = await exports.getAccessToken(config.appId, config.secret)
     global.accessToken = JSON.parse(accessToken)['access_token']
+    console.log(global.accessToken)
     setInterval(async () => {
         global.accessToken = await exports.getAccessToken(config.appId, config.secret).then(result => {
             global.accessToken = JSON.parse(result)['access_token']
@@ -46,7 +47,7 @@ exports.uploadImg = async (filePath, accessToken) => {
             media: {
                 value: fs.createReadStream(filePath),
                 options: {
-                    filename: Math.random().toString().slice(-8),
+                    filename: 'img.' + ext,
                     contentType: mime
                 }
             }
