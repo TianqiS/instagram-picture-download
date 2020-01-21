@@ -33,7 +33,7 @@ module.exports = async (url) => {
     return new Promise((resolve, reject) => {
         request(imgUrl).pipe(fs.createWriteStream(savePath))
         request(imgUrl).on('end', () => {
-            resolve('success')
+            resolve(savePath)
         })
     })
 }

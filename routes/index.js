@@ -1,5 +1,7 @@
 const router = require('koa-router')()
 const config =require('../utils/config')
+const insDownload = require('../utils/insDownload')
+const wechatPublicApi = require('../utils/wechatPublicApi')
 const encrypt = require('../utils/encode').encrypt
 
 router.get('/', async (ctx, next) => {
@@ -21,8 +23,24 @@ router.get('/', async (ctx, next) => {
 })
 
 router.post('/', async (ctx, next) => {
-    console.log(ctx.request.body)
-    return ctx.body = "success"
+    let returnBody = ''
+    const xmlContent = ctx.request.body.xml
+    const MsgType = xmlContent.MsgType[0]
+    const Content = xmlContent.Content[0]
+    const accessToken = global.accessToken
+    switch (MsgType) {
+        case 'text':
+            let patt = new RegExp('.*www.instagram.com.*')
+            if(patt.test(Content)) {
+                let filePath = await insDownload(Content)
+                returnBody = await wechatPublicApi.uploadImg(filePath, accessToken)
+                console.log(returnBody)
+                break
+            }
+        default:
+            returnBody = 'success'
+    }
+    return ctx.body = returnBody
 })
 
 router.get('/string', async (ctx, next) => {
