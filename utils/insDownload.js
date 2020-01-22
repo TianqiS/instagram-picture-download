@@ -29,6 +29,7 @@ module.exports = async (url, accessToken) => {
     }).catch(error => {
         throw error
     })
+    await browser.close();
     const imgName = /[^\/]+\.(png|jpe?g|gif|svg)/.exec(imgUrl)[0]
     const { data: imgStream } = await axios.get(imgUrl, {
         responseType: 'stream'
