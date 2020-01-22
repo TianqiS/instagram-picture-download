@@ -1,6 +1,6 @@
 const rp = require('request-promise')
+const request = require('request')
 const config = require('./config')
-const fs = require('fs')
 const path = require('path')
 
 exports.getAccessToken = async (appId, secret) => {
@@ -29,30 +29,33 @@ exports.getAndRefreshToken = async () => {
     }, 1000 * 60 * 60 * 2 - 5 * 1000 * 60)
 }
 
-exports.uploadImg = async (filePath, accessToken) => {
+exports.uploadImg = async (fileName, accessToken, fileStream) => {
+    const url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${accessToken}&type=image`
     const mimes = {
         '.png': 'image/png',
         '.gif': 'image/gif',
         '.jpg': 'image/jpeg',
         '.jpeg': 'image/jpeg'
     };
-    const ext = path.extname(filePath);
+    const ext = path.extname(fileName);
     const mime = mimes[ext];
     if(!mime) throw new Error('类型错误')
 
-    const option = {
-        method: 'post',
-        uri: `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${accessToken}&type=image`,
-        formData: {
-            media: {
-                value: fs.createReadStream(filePath),
-                options: {
-                    filename: 'img.' + ext,
-                    contentType: mime
-                }
+    const formData = {
+        media: {
+            value: fileStream,
+            options: {
+                filename: 'img.' + ext,
+                contentType: mime
             }
         }
     }
-
-    return rp(option)
+    return new Promise((resolve, reject) => {
+        request.post({ url, formData }, (err, res, body) => {
+            if(err) {
+                reject(err)
+            }
+            resolve(body)
+        })
+    })
 }

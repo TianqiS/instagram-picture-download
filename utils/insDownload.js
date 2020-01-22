@@ -1,8 +1,10 @@
 const fs = require('fs')
 const request = require('request')
+const axios = require('axios')
 const path = require('path')
 const puppeteer = require('puppeteer')
 const config = require('./config')
+const wechatPublicApi = require('./wechatPublicApi')
 const rootDir = config.rootDir
 
 function mkdirSync(dirname) {
@@ -17,7 +19,7 @@ function mkdirSync(dirname) {
     return false
 }
 
-module.exports = async (url) => {
+module.exports = async (url, accessToken) => {
     const browers = await puppeteer.launch({args: ['--no-sandbox']})
     const page = await browers.newPage()
 
@@ -28,12 +30,10 @@ module.exports = async (url) => {
         throw error
     })
     const imgName = /[^\/]+\.(png|jpe?g|gif|svg)/.exec(imgUrl)[0]
-    const savePath = path.resolve(rootDir, './file/', imgName)
-    mkdirSync('file')
-    return new Promise((resolve, reject) => {
-        request(imgUrl).pipe(fs.createWriteStream(savePath))
-        request(imgUrl).on('end', () => {
-            resolve(savePath)
-        })
+    const { data: imgStream } = await axios.get(imgUrl, {
+        responseType: 'stream'
     })
+
+    return await wechatPublicApi.uploadImg(imgName, accessToken, imgStream)
+
 }

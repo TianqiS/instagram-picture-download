@@ -33,15 +33,18 @@ router.post('/', async (ctx, next) => {
         case 'text':
             let patt = new RegExp('.*www.instagram.com.*')
             if(patt.test(Content)) {
-                let filePath = await insDownload(Content)
-                let mediaInfo = await wechatPublicApi.uploadImg(filePath, accessToken)
+                let mediaInfo = await insDownload(Content, accessToken)
+                console.log(mediaInfo)
                 let mediaId = JSON.parse(mediaInfo)['media_id']
+                console.log(mediaId)
                 returnBody = xmlTool.jsonToXml({ xml: {
                         ToUserName: xmlContent.FromUserName,
                         FromUserName: xmlContent.ToUserName,
                         CreateTime: Date.now(),
-                        MsgType: 'text',
-                        Content: '我已经收到了你的链接，请稍等哦'
+                        MsgType: 'image',
+                        Image: {
+                            MediaId: mediaId
+                        }
                     }})
                 break
             }
