@@ -1,8 +1,6 @@
 const router = require('koa-router')()
 const config =require('../utils/config')
-const insDownload = require('../utils/insDownload')
-const wechatPublicApi = require('../utils/wechatPublicApi')
-const xmlTool = require('../utils/xmlTool')
+const messageSwitch = require('../utils/messageSwitch')
 const encrypt = require('../utils/encode').encrypt
 
 router.get('/', async (ctx, next) => {
@@ -24,33 +22,9 @@ router.get('/', async (ctx, next) => {
 })
 
 router.post('/', async (ctx, next) => {
-    let returnBody = ''
     const xmlContent = ctx.request.body.xml
-    const MsgType = xmlContent.MsgType[0]
-    const Content = xmlContent.Content[0]
     const accessToken = global.accessToken
-    switch (MsgType) {
-        case 'text':
-            let patt = new RegExp('.*www.instagram.com.*')
-            if(patt.test(Content)) {
-                let mediaInfo = await insDownload(Content, accessToken)
-                console.log(mediaInfo)
-                let mediaId = JSON.parse(mediaInfo)['media_id']
-                console.log(mediaId)
-                returnBody = xmlTool.jsonToXml({ xml: {
-                        ToUserName: xmlContent.FromUserName,
-                        FromUserName: xmlContent.ToUserName,
-                        CreateTime: Date.now(),
-                        MsgType: 'image',
-                        Image: {
-                            MediaId: mediaId
-                        }
-                    }})
-                break
-            }
-        default:
-            returnBody = 'success'
-    }
+    const returnBody = await messageSwitch(xmlContent, accessToken)
     return ctx.body = returnBody
 })
 
