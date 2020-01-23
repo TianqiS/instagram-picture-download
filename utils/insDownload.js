@@ -35,17 +35,17 @@ exports.downloadPic = async (url, accessToken) => {
     const page = await browser.newPage()
 
     await page.goto(url)
-    let imgUrl = await page.$eval('.FFVAD', (imgEle) => {
-        return imgEle.src
+    let fileUrl = await page.$eval('.FFVAD,.tWeCl', (ele) => {
+        return ele.src
     }).catch(error => {
         throw error
     })
     await page.close();
-    const imgName = /[^\/]+\.(png|jpe?g|gif|svg)/.exec(imgUrl)[0]
-    const { data: imgStream } = await axios.get(imgUrl, {
+    const fileName = /[^\/]+\.(png|jpe?g|gif|svg|mp4)/.exec(fileUrl)[0]
+    const { data: imgStream } = await axios.get(fileUrl, {
         responseType: 'stream'
     })
 
-    return await wechatPublicApi.uploadImg(imgName, accessToken, imgStream)
+    return await wechatPublicApi.uploadFile(fileName, accessToken, imgStream)
 
 }

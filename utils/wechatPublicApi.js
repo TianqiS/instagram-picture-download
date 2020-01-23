@@ -29,23 +29,34 @@ exports.getAndRefreshToken = async () => {
     }, 1000 * 60 * 60 * 2 - 5 * 1000 * 60)
 }
 
-exports.uploadImg = async (fileName, accessToken, fileStream) => {
-    const url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${accessToken}&type=image`
+exports.uploadFile = async (fileName, accessToken, fileStream) => {
+    const ext = path.extname(fileName)
+    const types = {
+        '.png': 'image',
+        '.gif': 'image',
+        '.jpg': 'image',
+        '.jpeg': 'image',
+        '.mp4': 'video'
+    }
     const mimes = {
         '.png': 'image/png',
         '.gif': 'image/gif',
         '.jpg': 'image/jpeg',
-        '.jpeg': 'image/jpeg'
+        '.jpeg': 'image/jpeg',
+        '.mp4': 'video/mp4'
     };
-    const ext = path.extname(fileName);
-    const mime = mimes[ext];
+    const mime = mimes[ext]
+    const type = types[ext]
+    const url = `https://api.weixin.qq.com/cgi-bin/media/upload?access_token=${accessToken}&type=${type}`
+
+
     if(!mime) throw new Error('类型错误')
 
     const formData = {
         media: {
             value: fileStream,
             options: {
-                filename: 'img.' + ext,
+                filename: 'file' + ext,
                 contentType: mime
             }
         }
