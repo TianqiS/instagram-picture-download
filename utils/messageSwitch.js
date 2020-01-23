@@ -50,6 +50,8 @@ module.exports = async (xmlContent, accessToken) => {
                 MsgType: 'text',
                 Content: '欢迎光临:)'
             }
+            returnBody = xmlTool.jsonToXml({ xml: returnXml})
+            break
         default:
             returnBody = 'success'
     }
