@@ -42,6 +42,14 @@ module.exports = async (xmlContent, accessToken) => {
             }
             returnBody = xmlTool.jsonToXml({ xml: returnXml})
             break
+        case 'event':
+            returnXml = {
+                ToUserName: xmlContent.FromUserName,
+                FromUserName: xmlContent.ToUserName,
+                CreateTime: Date.now(),
+                MsgType: 'text',
+                Content: '欢迎光临:)'
+            }
         default:
             returnBody = 'success'
     }
