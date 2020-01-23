@@ -12,8 +12,10 @@ const users = require('./routes/users')
 const ins = require('./routes/ins')
 const config = require('./utils/config')
 const wechatPublicApi = require('./utils/wechatPublicApi')
+const insDownload = require('./utils/insDownload')
 
 wechatPublicApi.getAndRefreshToken()
+insDownload.initChrome()
 
 // error handler
 onerror(app)

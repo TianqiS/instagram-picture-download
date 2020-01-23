@@ -19,9 +19,20 @@ function mkdirSync(dirname) {
     return false
 }
 
-module.exports = async (url, accessToken) => {
-    const browers = await puppeteer.launch({args: ['--no-sandbox']})
-    const page = await browers.newPage()
+exports.initChrome = async () => {
+    global.browser = await puppeteer.launch({args: [
+            '--disable-gpu',
+            '--disable-dev-shm-usage',
+            '--disable-setuid-sandbox',
+            '--no-first-run',
+            '--no-sandbox',
+            '--no-zygote'
+        ]})
+}
+
+exports.downloadPic = async (url, accessToken) => {
+    const browser = global.browser
+    const page = await browser.newPage()
 
     await page.goto(url)
     let imgUrl = await page.$eval('.FFVAD', (imgEle) => {
@@ -29,7 +40,7 @@ module.exports = async (url, accessToken) => {
     }).catch(error => {
         throw error
     })
-    await browers.close();
+    await browser.close();
     const imgName = /[^\/]+\.(png|jpe?g|gif|svg)/.exec(imgUrl)[0]
     const { data: imgStream } = await axios.get(imgUrl, {
         responseType: 'stream'
