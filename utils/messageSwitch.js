@@ -3,7 +3,7 @@ const xmlTool = require('../utils/xmlTool')
 
 module.exports = async (xmlContent, accessToken) => {
     const MsgType = xmlContent.MsgType[0]
-    const Content = xmlContent.Content[0]
+    const Content = xmlContent? xmlContent.Content[0] : ''
     let returnXml = {}
     let returnBody = ''
     switch (MsgType) {
