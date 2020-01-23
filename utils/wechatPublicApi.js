@@ -66,7 +66,10 @@ exports.uploadFile = async (fileName, accessToken, fileStream) => {
             if(err) {
                 reject(err)
             }
-            resolve(body)
+            resolve({
+                mediaInfo: body,
+                mediaType: type
+            })
         })
     })
 }

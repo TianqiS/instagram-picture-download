@@ -9,13 +9,13 @@ module.exports = async (xmlContent, accessToken) => {
         case 'text':
             let patt = new RegExp('.*www.instagram.com.*')
             if(patt.test(Content)) {
-                let mediaInfo = await insDownload.downloadPic(Content, accessToken)
-                let mediaId = JSON.parse(mediaInfo)['media_id']
+                let wechatReturnInfo = await insDownload.downloadPic(Content, accessToken)
+                let mediaId = JSON.parse(wechatReturnInfo.mediaInfo)['media_id']
                 returnBody = xmlTool.jsonToXml({ xml: {
                         ToUserName: xmlContent.FromUserName,
                         FromUserName: xmlContent.ToUserName,
                         CreateTime: Date.now(),
-                        MsgType: 'image',
+                        MsgType: wechatReturnInfo.type,
                         Image: {
                             MediaId: mediaId
                         }
