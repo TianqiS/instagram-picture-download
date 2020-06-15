@@ -35,6 +35,21 @@ exports.downloadPic = async (url, accessToken) => {
     const page = await browser.newPage()
 
     await page.goto(url)
+    await page.waitFor(2000)
+    let flag = await page.$('input[name="username"]')
+    if(!!flag) {
+        await page.type('input[name="username"]', config.insUserName, {delay: 100})
+        await page.type('input[name="password"]', config.insPassword, {delay: 100})
+
+        await page.click('button[type="submit"]')
+
+        await page.waitFor(3000);
+        await page.screenshot({path: './show.png'})
+        let  navigationPromise = page.waitForNavigation()
+        await page.click('.L3NKy')
+        await navigationPromise
+        await page.waitFor(2000)
+    }
     let fileUrl = await page.$eval('.FFVAD,.tWeCl', (ele) => {
         return ele.src
     }).catch(error => {
