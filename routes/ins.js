@@ -13,7 +13,7 @@ router.get('/downloadPic', async (ctx, next) => {
     // }).catch(error => {
     //     console.log(error)
     // })
-    let imgElement = await insDownload(url)
+    let imgElement = await insDownload.downloadPic(url)
     ctx.body = imgElement
 })
 
